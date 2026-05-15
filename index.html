@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Sacolas Personalizadas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        h1, h2 { color: #2c3e50; }
+        .tabs { display: flex; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; cursor: pointer; background: #eee; margin-right: 5px; border-radius: 5px 5px 0 0; }
+        .tab.active { background: #3498db; color: white; }
+        input, select { padding: 8px; margin: 5px 0; width: 100%; max-width: 300px; }
+        button { padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #219653; }
+        .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛍️ Calculadora de Precificação de Sacolas</h1>
+        <p>Ferramenta inteligente para calcular custos e preços de venda</p>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab(0)">Papel</div>
+            <div class="tab" onclick="showTab(1)">Plástica</div>
+            <div class="tab" onclick="showTab(2)">Ecobag / Tecido</div>
+        </div>
+
+        <div id="tab0" class="tab-content">
+            <h2>Sacola de Papel (Kraft, Offset, Couché)</h2>
+            <label>Custo Material (R$ por unidade):</label><br>
+            <input type="number" id="mat0" value="3.5" step="0.1"><br>
+            <label>Horas para 100 unidades:</label><br>
+            <input type="number" id="horas0" value="4" step="0.5"><br>
+            <label>Valor da sua hora (R$):</label><br>
+            <input type="number" id="horaValor0" value="50" step="1"><br>
+            <label>Custo Fixo Mensal Rateado (R$ por unidade):</label><br>
+            <input type="number" id="fixo0" value="1.2" step="0.1"><br>
+            <button onclick="calcular(0)">Calcular Preço</button>
+            <div id="result0" class="result"></div>
+        </div>
+
+        <div id="tab1" class="tab-content" style="display:none;">
+            <h2>Sacola Plástica</h2>
+            <label>Custo Material (R$ por unidade):</label><br>
+            <input type="number" id="mat1" value="0.8" step="0.1"><br>
+            <label>Horas para 100 unidades:</label><br>
+            <input type="number" id="horas1" value="2" step="0.5"><br>
+            <label>Valor da sua hora (R$):</label><br>
+            <input type="number" id="horaValor1" value="50" step="1"><br>
+            <label>Custo Fixo Mensal Rateado (R$ por unidade):</label><br>
+            <input type="number" id="fixo1" value="0.5" step="0.1"><br>
+            <button onclick="calcular(1)">Calcular Preço</button>
+            <div id="result1" class="result"></div>
+        </div>
+
+        <div id="tab2" class="tab-content" style="display:none;">
+            <h2>Ecobag / Sacola de Tecido</h2>
+            <label>Custo Material (R$ por unidade):</label><br>
+            <input type="number" id="mat2" value="8" step="0.1"><br>
+            <label>Horas para 100 unidades:</label><br>
+            <input type="number" id="horas2" value="6" step="0.5"><br>
+            <label>Valor da sua hora (R$):</label><br>
+            <input type="number" id="horaValor2" value="50" step="1"><br>
+            <label>Custo Fixo Mensal Rateado (R$ por unidade):</label><br>
+            <input type="number" id="fixo2" value="2" step="0.1"><br>
+            <button onclick="calcular(2)">Calcular Preço</button>
+            <div id="result2" class="result"></div>
+        </div>
+
+        <h2>Margens Sugeridas</h2>
+        <table>
+            <tr><th>Tipo</th><th>Margem Bruta Recomendada</th><th>Preço Sugerido</th></tr>
+            <tr><td>Papel</td><td>50-80%</td><td id="sug0"></td></tr>
+            <tr><td>Plástica</td><td>70-120%</td><td id="sug1"></td></tr>
+            <tr><td>Ecobag</td><td>60-100%</td><td id="sug2"></td></tr>
+        </table>
+    </div>
+
+    <script>
+        function showTab(n) {
+            document.querySelectorAll('.tab-content').forEach((el, i) => {
+                el.style.display = i === n ? 'block' : 'none';
+            });
+            document.querySelectorAll('.tab').forEach((el, i) => {
+                el.classList.toggle('active', i === n);
+            });
+        }
+
+        function calcular(tipo) {
+            const mat = parseFloat(document.getElementById('mat' + tipo).value) || 0;
+            const horas = parseFloat(document.getElementById('horas' + tipo).value) || 0;
+            const valorHora = parseFloat(document.getElementById('horaValor' + tipo).value) || 0;
+            const fixo = parseFloat(document.getElementById('fixo' + tipo).value) || 0;
+
+            const maoObra = (horas * valorHora) / 100;
+            const custoTotal = mat + maoObra + fixo;
+
+            let html = `<strong>Custo Total por unidade:</strong> R$ ${custoTotal.toFixed(2)}<br>`;
+            html += `<strong>Mão de Obra por unidade:</strong> R$ ${maoObra.toFixed(2)}<br><br>`;
+
+            const margens = [0.5, 0.7, 1.0, 1.5];
+            margens.forEach(m => {
+                const preco = custoTotal * (1 + m);
+                html += `Preço com ${Math.round(m*100)}% margem: <strong>R$ ${preco.toFixed(2)}</strong><br>`;
+            });
+
+            document.getElementById('result' + tipo).innerHTML = html;
+        }
+
+        // Inicializa
+        showTab(0);
+    </script>
+</body>
+</html>
