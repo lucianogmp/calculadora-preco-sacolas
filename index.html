@@ -1,119 +1,104 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Sacolas Personalizadas</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-        h1, h2 { color: #2c3e50; }
-        .tabs { display: flex; margin-bottom: 20px; }
-        .tab { padding: 10px 20px; cursor: pointer; background: #eee; margin-right: 5px; border-radius: 5px 5px 0 0; }
-        .tab.active { background: #3498db; color: white; }
-        input, select { padding: 8px; margin: 5px 0; width: 100%; max-width: 300px; }
-        button { padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #219653; }
-        .result { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Sacolas de Papel - Precificação Inteligente</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f1f1; margin: 0; padding: 20px; }
+    .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #c81e6c; }
+    .aba { display: none; } .aba.active { display: block; }
+    input, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; }
+    button { background: #c81e6c; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    button:hover { background: #a01857; }
+    .resultado { background: #fff0f5; padding: 20px; border-radius: 10px; margin-top: 20px; font-size: 1.1em; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🛍️ Calculadora de Precificação de Sacolas</h1>
-        <p>Ferramenta inteligente para calcular custos e preços de venda</p>
+  <div class="container">
+    <h1>🛍️ Calculadora de Sacolas Personalizadas de Papel</h1>
 
-        <div class="tabs">
-            <div class="tab active" onclick="showTab(0)">Papel</div>
-            <div class="tab" onclick="showTab(1)">Plástica</div>
-            <div class="tab" onclick="showTab(2)">Ecobag / Tecido</div>
-        </div>
+    <label>Tamanho da Sacola:</label>
+    <select id="tamanho" onchange="calcular()">
+      <option value="0.28">Pequena (20x25x8cm) - 0,28 m²</option>
+      <option value="0.38" selected>Média (25x35x10cm) - 0,38 m²</option>
+      <option value="0.52">Grande (30x40x12cm) - 0,52 m²</option>
+    </select>
 
-        <div id="tab0" class="tab-content">
-            <h2>Sacola de Papel (Kraft, Offset, Couché)</h2>
-            <label>Custo Material (R$ por unidade):</label><br>
-            <input type="number" id="mat0" value="3.5" step="0.1"><br>
-            <label>Horas para 100 unidades:</label><br>
-            <input type="number" id="horas0" value="4" step="0.5"><br>
-            <label>Valor da sua hora (R$):</label><br>
-            <input type="number" id="horaValor0" value="50" step="1"><br>
-            <label>Custo Fixo Mensal Rateado (R$ por unidade):</label><br>
-            <input type="number" id="fixo0" value="1.2" step="0.1"><br>
-            <button onclick="calcular(0)">Calcular Preço</button>
-            <div id="result0" class="result"></div>
-        </div>
+    <label>Gramatura do Papel (g/m²):</label>
+    <input type="number" id="gramatura" value="130" oninput="calcular()">
 
-        <div id="tab1" class="tab-content" style="display:none;">
-            <h2>Sacola Plástica</h2>
-            <label>Custo Material (R$ por unidade):</label><br>
-            <input type="number" id="mat1" value="0.8" step="0.1"><br>
-            <label>Horas para 100 unidades:</label><br>
-            <input type="number" id="horas1" value="2" step="0.5"><br>
-            <label>Valor da sua hora (R$):</label><br>
-            <input type="number" id="horaValor1" value="50" step="1"><br>
-            <label>Custo Fixo Mensal Rateado (R$ por unidade):</label><br>
-            <input type="number" id="fixo1" value="0.5" step="0.1"><br>
-            <button onclick="calcular(1)">Calcular Preço</button>
-            <div id="result1" class="result"></div>
-        </div>
+    <label>Preço do Papel por Kg (R$):</label>
+    <input type="number" id="precoKg" value="9.50" step="0.10" oninput="calcular()">
 
-        <div id="tab2" class="tab-content" style="display:none;">
-            <h2>Ecobag / Sacola de Tecido</h2>
-            <label>Custo Material (R$ por unidade):</label><br>
-            <input type="number" id="mat2" value="8" step="0.1"><br>
-            <label>Horas para 100 unidades:</label><br>
-            <input type="number" id="horas2" value="6" step="0.5"><br>
-            <label>Valor da sua hora (R$):</label><br>
-            <input type="number" id="horaValor2" value="50" step="1"><br>
-            <label>Custo Fixo Mensal Rateado (R$ por unidade):</label><br>
-            <input type="number" id="fixo2" value="2" step="0.1"><br>
-            <button onclick="calcular(2)">Calcular Preço</button>
-            <div id="result2" class="result"></div>
-        </div>
+    <label>Impressão + Laminação (R$):</label>
+    <input type="number" id="impressao" value="2.15" step="0.10" oninput="calcular()">
 
-        <h2>Margens Sugeridas</h2>
-        <table>
-            <tr><th>Tipo</th><th>Margem Bruta Recomendada</th><th>Preço Sugerido</th></tr>
-            <tr><td>Papel</td><td>50-80%</td><td id="sug0"></td></tr>
-            <tr><td>Plástica</td><td>70-120%</td><td id="sug1"></td></tr>
-            <tr><td>Ecobag</td><td>60-100%</td><td id="sug2"></td></tr>
-        </table>
+    <label>Alças + Ilhós + Reforço (R$):</label>
+    <input type="number" id="acessorios" value="0.87" step="0.10" oninput="calcular()">
+
+    <label>Tempo de montagem por sacola (minutos):</label>
+    <input type="number" id="tempo" value="2.5" step="0.1" oninput="calcular()">
+
+    <label>Valor da sua hora (R$):</label>
+    <input type="number" id="valorHora" value="35" oninput="calcular()">
+
+    <label>Custo Fixo Rateado por Sacola (R$):</label>
+    <input type="number" id="custoFixo" value="1.50" step="0.10" oninput="calcular()">
+
+    <button onclick="calcular()">🔄 Calcular Agora</button>
+
+    <div class="resultado" id="resultado">
+      <h2>Resultado</h2>
+      <table id="tabela"></table>
     </div>
+  </div>
 
-    <script>
-        function showTab(n) {
-            document.querySelectorAll('.tab-content').forEach((el, i) => {
-                el.style.display = i === n ? 'block' : 'none';
-            });
-            document.querySelectorAll('.tab').forEach((el, i) => {
-                el.classList.toggle('active', i === n);
-            });
-        }
+  <script>
+    function calcular() {
+      const area = parseFloat(document.getElementById('tamanho').value);
+      const gramatura = parseFloat(document.getElementById('gramatura').value);
+      const precoKg = parseFloat(document.getElementById('precoKg').value);
+      const impressao = parseFloat(document.getElementById('impressao').value);
+      const acessorios = parseFloat(document.getElementById('acessorios').value);
+      const tempoMin = parseFloat(document.getElementById('tempo').value);
+      const valorHora = parseFloat(document.getElementById('valorHora').value);
+      const custoFixo = parseFloat(document.getElementById('custoFixo').value);
 
-        function calcular(tipo) {
-            const mat = parseFloat(document.getElementById('mat' + tipo).value) || 0;
-            const horas = parseFloat(document.getElementById('horas' + tipo).value) || 0;
-            const valorHora = parseFloat(document.getElementById('horaValor' + tipo).value) || 0;
-            const fixo = parseFloat(document.getElementById('fixo' + tipo).value) || 0;
+      // Cálculo do papel
+      const peso = (area * gramatura) / 1000;
+      const custoPapel = peso * precoKg * 1.25; // 25% desperdício
 
-            const maoObra = (horas * valorHora) / 100;
-            const custoTotal = mat + maoObra + fixo;
+      // Mão de obra
+      const custoMaoObra = (tempoMin / 60) * valorHora;
 
-            let html = `<strong>Custo Total por unidade:</strong> R$ ${custoTotal.toFixed(2)}<br>`;
-            html += `<strong>Mão de Obra por unidade:</strong> R$ ${maoObra.toFixed(2)}<br><br>`;
+      const custoTotal = custoPapel + impressao + acessorios + custoMaoObra + custoFixo;
 
-            const margens = [0.5, 0.7, 1.0, 1.5];
-            margens.forEach(m => {
-                const preco = custoTotal * (1 + m);
-                html += `Preço com ${Math.round(m*100)}% margem: <strong>R$ ${preco.toFixed(2)}</strong><br>`;
-            });
+      // Gera tabela
+      let html = `
+        <tr><td><strong>Custo do Papel</strong></td><td>R$ ${custoPapel.toFixed(2)}</td></tr>
+        <tr><td>Impressão + Laminação</td><td>R$ ${impressao.toFixed(2)}</td></tr>
+        <tr><td>Alças + Ilhós + Reforço</td><td>R$ ${acessorios.toFixed(2)}</td></tr>
+        <tr><td>Mão de Obra</td><td>R$ ${custoMaoObra.toFixed(2)}</td></tr>
+        <tr><td>Custos Fixos</td><td>R$ ${custoFixo.toFixed(2)}</td></tr>
+        <tr style="font-weight:bold; background:#ffe6f0;"><td><strong>CUSTO TOTAL</strong></td><td><strong>R$ ${custoTotal.toFixed(2)}</strong></td></tr>
+      `;
 
-            document.getElementById('result' + tipo).innerHTML = html;
-        }
+      // Sugestões de preço
+      html += `<tr><td colspan="2"><strong>Preços Sugeridos de Venda:</strong></td></tr>`;
+      [50, 70, 80, 100].forEach(margem => {
+        const precoVenda = custoTotal * (1 + margem/100);
+        html += `<tr><td>Margem ${margem}%</td><td><strong>R$ ${precoVenda.toFixed(2)}</strong></td></tr>`;
+      });
 
-        // Inicializa
-        showTab(0);
-    </script>
+      document.getElementById('tabela').innerHTML = html;
+    }
+
+    // Calcula automaticamente ao carregar
+    window.onload = calcular;
+  </script>
 </body>
 </html>
